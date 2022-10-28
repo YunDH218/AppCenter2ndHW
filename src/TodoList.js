@@ -37,17 +37,23 @@ const Todo = styled.ul`
   }
 `;
 
+const items = [
+  "Get a new helmet",
+  "Purchase Milk & Corn Flakes",
+  "Pay Mortgage",
+  "Complete Assignments",
+  "Replace laptop's screen"
+]
+
 export default function TodoList() {
   return (
     <div>
       <h1>Todo List</h1>
       <TodoInput  placeholder="Todo 내용을 입력해주세요."/>
       <div>
-        <Todo>Get a new helmet</Todo>
-        <Todo>Purchase Milk & Corn Flakes</Todo>
-        <Todo>Pay Mortgage</Todo>
-        <Todo>Complete Assignments</Todo>
-        <Todo>Replace laptop's screen</Todo>
+      {items.map((item) =>
+        <Todo>{item}</Todo>
+      )}
       </div>
     </div>
   )

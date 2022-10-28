@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import TodoList from "./TodoList";
-import Whether from "./Whether";
+import Weather from "./Weather";
 
 const ButtonWrap = styled.div`
   width: 20vw;
@@ -17,9 +17,9 @@ const Button = styled.div`
   font-weight: 500;
   margin-bottom: 1em;
   cursor: pointer;
-  &.active {
-    color: #e66;
-    font-weight: 700;
+  ${props => props.isSelected && `
+  color: #e66;
+  font-weight: 700;`
   }
 `
 const ContentWindow = styled.div`
@@ -27,38 +27,22 @@ const ContentWindow = styled.div`
   padding: 2em 2em 0;
 `
 
-export default class ContentsList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {content: "todo_list"}
-    this.setStateTodo = this.setStateTodo.bind(this);
-    this.setStateWhether = this.setStateWhether.bind(this);
+export default function ContentsList() {
+  const [content, setContent] = useState('todo_list')
+  const handleButtonClick = (e, content) => {
+    setContent(content)
   }
 
-  setStateTodo(e) {
-    this.setState({content: "todo_list"});
-    e.target.parentElement.lastChild.classList.remove("active");
-    e.target.classList.add("active");
-  }
-
-  setStateWhether(e) {
-    this.setState({content: "whether"});
-    e.target.parentElement.firstChild.classList.remove("active");
-    e.target.classList.add("active");
-  }
-
-  render() {
-    return (
-      <div style={{display: "flex", maxWidth: "100vw"}}>
-        <ButtonWrap>
-          <Button className="active" onClick={(e) => this.setStateTodo(e)}>Todo List</Button>
-          <Button onClick={(e) => this.setStateWhether(e)}>Weather</Button>
-        </ButtonWrap>
-        <ContentWindow>
-          {this.state.content==="todo_list" ? <TodoList /> : <></>}
-          {this.state.content==="whether" ? <Whether /> : <></>}
-        </ContentWindow>
-      </div>
-    );
-  }
+  return (
+    <div style={{display: "flex", maxWidth: "100vw"}}>
+      <ButtonWrap>
+        <Button isSelected = {content === 'todo_list'} onClick={(e)=>handleButtonClick(e, 'todo_list')}>Todo List</Button>
+        <Button isSelected = {content === 'weather'} onClick={(e)=>handleButtonClick(e, 'weather')}>Weather</Button>
+      </ButtonWrap>
+      <ContentWindow>
+        {content==="todo_list" ? <TodoList /> : <></>}
+        {content==="weather" ? <Weather /> : <></>}
+      </ContentWindow>
+    </div>
+  );
 }
