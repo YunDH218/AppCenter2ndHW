@@ -1,10 +1,14 @@
-import ContentsList from "./ContentsList"
+import { Route, Routes } from "react-router-dom";
+import TodoList from "./pages/TodoList";
+import Weather from "./pages/Weather";
+
 
 function App() {
   return (
-    <div className="App">
-      <ContentsList />
-    </div>
+    <Routes>
+      <Route path="/todolist" element={<TodoList />} />
+      <Route path="/weather" element={<Weather />} />
+    </Routes>
   );
 }
 
