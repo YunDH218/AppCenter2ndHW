@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import TodoList from "./pages/TodoList";
 import Weather from "./pages/Weather";
+import "./utils/DateFormat";
 
 
 function App() {

@@ -1,17 +1,11 @@
+import { useState, useEffect } from "react"
 import styled from "styled-components"
 import color from "../Color"
 import GroupNav from "../components/GroupNav"
+import { getUltraSrtFcst, getUltraSrtNcst } from "../api/weather"
+import Inner from "../components/Inner"
+import WeatherFig from "../components/WeatherFig"
 
-const Inner = styled.div`
-  position: absolute;
-  left: 20vw;
-  top: 0;
-  bottom: 0;
-  width: 80vw;
-  height: 100vh;
-  padding: 2em 2em 0;
-  box-sizing: border-box;
-`
 const City = styled.div`
   font-size: 20px;
   font-weight: 600;
@@ -29,12 +23,6 @@ const InfoBox = styled.div`
   background-color: ${color.background2};
   box-sizing: border-box;
   border-radius: 1em;
-`
-const Figure = styled.span`
-  font-size: 120px;
-  color: orange;
-  vertical-align: middle;
-  font-family: "Material Icons";
 `
 const Temperature = styled.span`
   color: ${color.subtext};
@@ -63,29 +51,45 @@ const InfoSub = styled.div`
   ${props => props.pos === "left"? "left" : "right"}: 1em;
 `
 
-const data = {
-  city: "대한민국, 인천광역시",
-  region: "송도동",
-  weather: "sunny",
-  temp_cur: 10,
-  temp_max: 13,
-  temp_min: 10,
-  temp_feel: 7
-}
-
 export default function Weather() {
+  // const [data, setData] = useState({
+  //   city: "대한민국, 인천광역시",
+  //   region: "송도동",
+  //   sky: 0,
+  //   temp_cur: 0,
+  //   temp_max: 0,
+  //   temp_min: 0,
+  //   temp_feel: 0
+  // })
+  const [tempCur, setTempCur] = useState('')
+  const [sky, setSky] = useState('')
+  useEffect(()=>{
+    getUltraSrtNcst()
+    .then(res =>{
+      const items = res.response.body.items.item;
+      setTempCur(items.filter(item => item.category === 'T1H')[0].obsrValue)
+    })
+    .catch(e => console.log(e))
+    getUltraSrtFcst()
+    .then(res => {
+      const items = res.response.body.items.item
+      setSky(items.filter(item => item.category === 'SKY')[0].fcstValue)
+    })
+    .catch(e => console.log(e))
+  },[])
+
   return (
     <>
       <GroupNav />
       <Inner>
         <h1>Weather</h1>
-        <Region>{data.region}</Region>
-        <City>{data.city}</City>
+        <Region>송도동</Region>
+        <City>대한민국, 인천광역시</City>
         <InfoBox>
-          <Figure>{data.weather}</Figure>
-          <Temperature>{data.temp_cur}<span style={{color: "#555"}}>˚</span></Temperature>
-          <Info><InfoSub pos="left">최고기온/최저기온</InfoSub><InfoSub pos="right">{data.temp_max}˚C/{data.temp_min}˚C</InfoSub></Info>
-          <Info><InfoSub pos="left">체감온도</InfoSub><InfoSub pos="right">{data.temp_feel}˚C</InfoSub></Info>
+          <WeatherFig sky={sky}/>
+          <Temperature>{tempCur}<span style={{color: "#555"}}>˚</span></Temperature>
+          <Info><InfoSub pos="left">최고기온/최저기온</InfoSub><InfoSub pos="right">0˚C/0˚C</InfoSub></Info>
+          <Info><InfoSub pos="left">체감온도</InfoSub><InfoSub pos="right">0˚C</InfoSub></Info>
         </InfoBox>
       </Inner>
     </>
